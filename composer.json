@@ -1,0 +1,21 @@
+{
+	"name": "root/bee-jee",
+	"description": "Test application",
+	"type": "project",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Khamidov Magomed",
+			"email": "khamidov.che@gmail.com"
+		}
+	],
+	"minimum-stability": "stable",
+	"require": {
+		"pecee/simple-router": "4.2.0.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "app"
+		}
+	}
+}
