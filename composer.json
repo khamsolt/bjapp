@@ -11,7 +11,8 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"pecee/simple-router": "4.2.0.6"
+		"pecee/simple-router": "4.2.0.6",
+		"thingengineer/mysqli-database-class": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {

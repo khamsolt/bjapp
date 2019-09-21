@@ -1,7 +1,25 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/../config/app.php';
+
 define('ROOT', dirname(__DIR__));
 
-require_once __DIR__ . '/../vendor/autoload.php';
+error_reporting(E_ALL);
+
+ini_set("display_errors", 1);
+
+$container = new DI\Container();
+
+$builder = new DI\ContainerBuilder();
+
+$builder->useAutowiring(true);
+
+$builder->addDefinitions($app);
+
+$builder->build();
+
+Pecee\SimpleRouter\SimpleRouter::enableDependencyInjection($container);
 
 require_once __DIR__ . '/../routes/web.php';
