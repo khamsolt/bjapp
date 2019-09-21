@@ -1,3 +1,6 @@
 vendor
 .idea
 logs
+public/js
+public/css
+node_modules
