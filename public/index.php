@@ -10,15 +10,15 @@ error_reporting(E_ALL);
 
 ini_set("display_errors", 1);
 
-$container = new DI\Container();
-
 $builder = new DI\ContainerBuilder();
 
 $builder->useAutowiring(true);
 
+$builder->useAnnotations(false);
+
 $builder->addDefinitions($app);
 
-$builder->build();
+$container = $builder->build();
 
 Pecee\SimpleRouter\SimpleRouter::enableDependencyInjection($container);
 
