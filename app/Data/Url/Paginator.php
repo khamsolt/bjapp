@@ -22,10 +22,11 @@ class Paginator
     /**
      * @param int $currentPage
      * @param int $totalPages
+     * @param string $name
      * @return array
      * @throws MalformedUrlException
      */
-    public function generate(int $currentPage, int $totalPages)
+    public function generate(int $currentPage, int $totalPages, string $name = 'home')
     {
         $links = [
             'firstPage' => 1,
@@ -33,7 +34,7 @@ class Paginator
             'currentPage' => $currentPage,
         ];
         for ($i = 1; $i <= $totalPages; $i++) {
-            $links[$i] = $this->router->getUrl('home', null, ['page' => $i])->getRelativeUrl();
+            $links[$i] = $this->router->getUrl($name, null, ['page' => $i])->getRelativeUrl();
         }
         return $links;
     }
