@@ -22,14 +22,31 @@ class Task extends BaseValidation
      */
     public function valid(): self
     {
-        $this->data = [
+        try {
+            $this->data['id'] = $this->getID();
+        } catch (HttpInvalidParamException $exception) {
+        }
+        $this->data += [
             'name' => $this->getName(),
             'surname' => $this->getSurname(),
             'email' => $this->getEmail(),
             'text' => $this->getTask(),
+            'status' => $this->getStatus(),
         ];
         $this->isValid = true;
         return $this;
+    }
+
+    /**
+     * @return int
+     * @throws HttpInvalidParamException
+     */
+    public function getID(): int
+    {
+        if (empty($task = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT))) {
+            throw new HttpInvalidParamException('Невенрный id!');
+        }
+        return $task;
     }
 
     /**
@@ -78,6 +95,17 @@ class Task extends BaseValidation
             throw new HttpInvalidParamException('Задача должно состоять только из букв, заглавными или строчными.');
         }
         return $task;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        if (empty($task = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_BOOLEAN))) {
+            return 1;
+        }
+        return 2;
     }
 
     /**
