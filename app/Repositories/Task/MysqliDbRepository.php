@@ -6,17 +6,21 @@ namespace App\Repositories\Task;
 
 use App\Data\Structure\ModelCollection;
 use App\Models\Task;
-use App\Models\User;
 use App\Repositories\Contracts\TaskInterface;
 use App\Repositories\Manager as Repository;
 use Exception;
 use MysqliDb;
 
+/**
+ * Class MysqliDbRepository
+ * @package App\Repositories\Task
+ *
+ * @method MysqliDb getDb()
+ */
 class MysqliDbRepository extends Repository implements TaskInterface
 {
-
     /** @var string */
-    protected $table = 'tasks';
+    protected $table = 'tasks t';
 
     /**
      * MysqliDbRepository constructor.
@@ -36,7 +40,7 @@ class MysqliDbRepository extends Repository implements TaskInterface
      */
     public function all(array $columns = [], int $page = 1): ModelCollection
     {
-        return User::createCollection($this->db->paginate($this->table, $page, $columns));
+        return Task::createCollection($this->db->paginate($this->table, $page, $columns));
     }
 
     /**
@@ -48,7 +52,7 @@ class MysqliDbRepository extends Repository implements TaskInterface
      */
     public function latest(array $columns = [], int $page = 1): ModelCollection
     {
-        return User::createCollection($this->db->orderBy('created_at', 'DESC')->paginate($this->table, $page, $columns));
+        return Task::createCollection($this->db->orderBy('created_at', 'DESC')->paginate($this->table, $page, $columns));
     }
 
     /**
@@ -60,27 +64,36 @@ class MysqliDbRepository extends Repository implements TaskInterface
      */
     public function oldest(array $columns = [], int $page = 1): ModelCollection
     {
-        return User::createCollection($this->db->orderBy('created_at', 'ASC')->paginate($this->table, $page, $columns));
+        return Task::createCollection($this->db->orderBy('created_at', 'ASC')->paginate($this->table, $page, $columns));
     }
 
     /**
      * @param int $id
      * @param array $columns
-     * @return User
+     * @return Task
      * @throws Exception
      */
-    public function findById(int $id, array $columns = []): User
+    public function findById(int $id, array $columns = []): Task
     {
-        return User::create($this->db->where('id', $id)->get($this->table, 3, $columns));
+        return Task::create($this->db->where('id', $id)->get($this->table, 3, $columns));
     }
 
+    /**
+     * @param array $data
+     * @return Task
+     */
     public function create(array $data): Task
     {
 
     }
 
+    /**
+     * @param int $id
+     * @param array $data
+     * @return Task
+     */
     public function update(int $id, array $data): Task
     {
-        // TODO: Implement update() method.
+
     }
 }

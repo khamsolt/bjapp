@@ -16,7 +16,7 @@ interface TaskInterface
 
     public function oldest(array $columns = [], int $page = 0): ModelCollection;
 
-    public function findById(int $id, array $columns = []): User;
+    public function findById(int $id, array $columns = []): Task;
 
     public function create(array $data): Task;
 

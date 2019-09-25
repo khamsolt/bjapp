@@ -19,4 +19,12 @@ abstract class Manager
     {
         return $this->db->totalCount;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
 }
