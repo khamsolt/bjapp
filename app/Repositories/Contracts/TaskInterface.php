@@ -5,8 +5,6 @@ namespace App\Repositories\Contracts;
 
 
 use App\Data\Structure\ModelCollection;
-use App\Models\Task;
-use App\Models\User;
 
 interface TaskInterface
 {
@@ -16,9 +14,9 @@ interface TaskInterface
 
     public function oldest(array $columns = [], int $page = 0): ModelCollection;
 
-    public function findById(int $id, array $columns = []): Task;
+    public function findById(int $id, array $columns = []): ModelCollection;
 
     public function create(array $data);
 
-    public function update(int $id, array $data);
+    public function update(array $data);
 }

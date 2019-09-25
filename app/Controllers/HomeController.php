@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use App\Components\Session;
 use App\Data\Url\Paginator;
-use App\Repositories\Contracts\TaskInterface;
+use App\Services\Contracts\TaskServiceInterface;
 use App\Validation\Pagination;
 use App\Validation\Task;
 use App\View\Manager as View;
@@ -20,8 +20,8 @@ use Pecee\SimpleRouter\SimpleRouter;
  */
 class HomeController extends Controller
 {
-    /** @var TaskInterface */
-    private $taskRepository;
+    /** @var TaskServiceInterface */
+    private $taskService;
     /** @var Paginator */
     private $urlPaginator;
     /** @var Pagination */
@@ -31,14 +31,14 @@ class HomeController extends Controller
 
     /**
      * HomeController constructor.
-     * @param TaskInterface $taskRepository
+     * @param TaskServiceInterface $taskService
      * @param Task $taskValidation
      * @param Paginator $urlPaginator
      * @param Pagination $paginatorValidation
      */
-    public function __construct(TaskInterface $taskRepository, Task $taskValidation, Paginator $urlPaginator, Pagination $paginatorValidation)
+    public function __construct(TaskServiceInterface $taskService, Task $taskValidation, Paginator $urlPaginator, Pagination $paginatorValidation)
     {
-        $this->taskRepository = $taskRepository;
+        $this->taskService = $taskService;
         $this->urlPaginator = $urlPaginator;
         $this->paginatorValidation = $paginatorValidation;
         $this->taskValidation = $taskValidation;
@@ -51,9 +51,8 @@ class HomeController extends Controller
     public function index()
     {
         $currentPage = $this->paginatorValidation->getPage();
-        $data = $this->taskRepository->latest([], $currentPage);
-        $db = $this->taskRepository->getDb();
-        $links = $pagination = $this->urlPaginator->generate($currentPage, $db->totalPages);
+        $data = $this->taskService->findAll($currentPage);
+        $links = $this->taskService->withPaginationLinks($this->urlPaginator, $currentPage);
         return View::make('index', 'home')
             ->with('data', $data)
             ->with('links', $links);
@@ -63,8 +62,11 @@ class HomeController extends Controller
     {
         try {
             $data = $this->taskValidation->valid()->getData();
-            $this->taskRepository->create($data);
-            Session::withFlash('success', 'Задача успешно сохранена!');
+            if ($this->taskService->create($data)) {
+                Session::withFlash('success', 'Задача успешно сохранена!');
+            } else {
+                Session::withFlash('danger', 'Произошла не предвиденная ошибка, пожалуйста свяжитесь с администратором!');
+            }
         } catch (HttpInvalidParamException $e) {
             Session::withFlash('warning', $e->getMessage());
         }

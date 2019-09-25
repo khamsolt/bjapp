@@ -73,9 +73,9 @@ class MysqliDbRepository extends Repository implements TaskInterface
      * @return Task
      * @throws Exception
      */
-    public function findById(int $id, array $columns = []): Task
+    public function findById(int $id, array $columns = []): ModelCollection
     {
-        return Task::create($this->db->where('id', $id)->get($this->table, 3, $columns));
+        return Task::createCollection($this->db->where('id', $id)->get($this->table, 3, $columns));
     }
 
     /**
@@ -91,13 +91,14 @@ class MysqliDbRepository extends Repository implements TaskInterface
     }
 
     /**
-     * @param int $id
      * @param array $data
      * @return bool
      * @throws Exception
      */
-    public function update(int $id, array $data): bool
+    public function update(array $data): bool
     {
-        return $this->db->update($this->table, $data, $id);
+        $data['updated_at'] = $this->db->now();
+        $this->db->where('id', $data['id']);
+        return $this->db->update($this->table, $data);
     }
 }
