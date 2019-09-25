@@ -18,7 +18,7 @@ interface TaskInterface
 
     public function findById(int $id, array $columns = []): Task;
 
-    public function create(array $data): Task;
+    public function create(array $data);
 
-    public function update(int $id, array $data): Task;
+    public function update(int $id, array $data);
 }

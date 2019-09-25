@@ -20,7 +20,7 @@ use MysqliDb;
 class MysqliDbRepository extends Repository implements TaskInterface
 {
     /** @var string */
-    protected $table = 'tasks t';
+    protected $table = 'tasks';
 
     /**
      * MysqliDbRepository constructor.
@@ -80,20 +80,24 @@ class MysqliDbRepository extends Repository implements TaskInterface
 
     /**
      * @param array $data
-     * @return Task
+     * @return bool
+     * @throws Exception
      */
-    public function create(array $data): Task
+    public function create(array $data): bool
     {
-
+        $data['created_at'] = $this->db->now();
+        $data['updated_at'] = $this->db->now();
+        return $this->db->insert($this->table, $data);
     }
 
     /**
      * @param int $id
      * @param array $data
-     * @return Task
+     * @return bool
+     * @throws Exception
      */
-    public function update(int $id, array $data): Task
+    public function update(int $id, array $data): bool
     {
-
+        return $this->db->update($this->table, $data, $id);
     }
 }

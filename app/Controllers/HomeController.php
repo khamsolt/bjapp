@@ -4,12 +4,15 @@
 namespace App\Controllers;
 
 
+use App\Components\Session;
 use App\Data\Url\Paginator;
 use App\Repositories\Contracts\TaskInterface;
-use App\Repositories\Contracts\UserInterface;
 use App\Validation\Pagination;
+use App\Validation\Task;
 use App\View\Manager as View;
+use HttpInvalidParamException;
 use Pecee\Http\Exceptions\MalformedUrlException;
+use Pecee\SimpleRouter\SimpleRouter;
 
 /**
  * Class HomeController
@@ -17,27 +20,27 @@ use Pecee\Http\Exceptions\MalformedUrlException;
  */
 class HomeController extends Controller
 {
-    /** @var UserInterface */
-    private $userRepository;
     /** @var TaskInterface */
     private $taskRepository;
     /** @var Paginator */
     private $urlPaginator;
     /** @var Pagination */
+    private $paginatorValidation;
+    /** @var Task */
     private $taskValidation;
 
     /**
      * HomeController constructor.
-     * @param UserInterface $userRepository
      * @param TaskInterface $taskRepository
+     * @param Task $taskValidation
      * @param Paginator $urlPaginator
-     * @param Pagination $taskValidation
+     * @param Pagination $paginatorValidation
      */
-    public function __construct(UserInterface $userRepository, TaskInterface $taskRepository, Paginator $urlPaginator, Pagination $taskValidation)
+    public function __construct(TaskInterface $taskRepository, Task $taskValidation, Paginator $urlPaginator, Pagination $paginatorValidation)
     {
-        $this->userRepository = $userRepository;
         $this->taskRepository = $taskRepository;
         $this->urlPaginator = $urlPaginator;
+        $this->paginatorValidation = $paginatorValidation;
         $this->taskValidation = $taskValidation;
     }
 
@@ -47,8 +50,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $currentPage = $this->taskValidation->getPage();
-        $data = $this->taskRepository->all([], $currentPage);
+        $currentPage = $this->paginatorValidation->getPage();
+        $data = $this->taskRepository->latest([], $currentPage);
         $db = $this->taskRepository->getDb();
         $links = $pagination = $this->urlPaginator->generate($currentPage, $db->totalPages);
         return View::make('index', 'home')
@@ -56,8 +59,15 @@ class HomeController extends Controller
             ->with('links', $links);
     }
 
-    public function add()
+    public function store()
     {
-        
+        try {
+            $data = $this->taskValidation->valid()->getData();
+            $this->taskRepository->create($data);
+            Session::withFlash('success', 'Задача успешно сохранена!');
+        } catch (HttpInvalidParamException $e) {
+            Session::withFlash('warning', $e->getMessage());
+        }
+        SimpleRouter::response()->redirect('/');
     }
 }
