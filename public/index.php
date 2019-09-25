@@ -22,4 +22,10 @@ $container = $builder->build();
 
 Pecee\SimpleRouter\SimpleRouter::enableDependencyInjection($container);
 
+$container->set(Pecee\SimpleRouter\Router::class, Pecee\SimpleRouter\SimpleRouter::router());
+
+$container->set(Pecee\Http\Response::class, Pecee\SimpleRouter\SimpleRouter::request());
+
+$container->set(Pecee\Http\Response::class, Pecee\SimpleRouter\SimpleRouter::response());
+
 require_once __DIR__ . '/../routes/web.php';
