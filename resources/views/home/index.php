@@ -19,10 +19,10 @@
       <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Имя пользователя</th>
-        <th scope="col">Email</th>
-        <th scope="col">Статус</th>
-        <th scope="col">Текст</th>
+        <th>Имя пользователя</th>
+        <th>Email</th>
+        <th>Статус</th>
+        <th>Текст</th>
       </tr>
       </thead>
       <tbody>
@@ -32,11 +32,11 @@
           <td><?= $element->getUsername() ?></td>
           <td><?= $element->getEmail() ?></td>
           <td>
-              <?php if ($element->getStatus() === 1) { ?>
+              <?php if ($element->getStatus() === 1) : ?>
                 <span class="badge badge-secondary">В обработке</span>
-              <?php } else { ?>
-                <span class="badge badge-success">В обработке</span
-              <?php } ?>
+              <?php else: ?>
+                <span class="badge badge-success">отредактировано администратором</span
+              <?php endif; ?>
           </td>
           <td><?= $element->getText() ?></td>
         </tr>
@@ -49,11 +49,11 @@
       <div class="col-lg-4">
         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
           <div class="btn-group mr-2" role="group" aria-label="First group">
-              <?php for ($i = 1; $i <= $links['lastPage']; $i++) { ?>
-                <a href="<?= $links[$i] ?>" class="btn <?php if ($links['currentPage'] === $i) { ?> btn-dark disabled <?php } else { ?> btn-outline-dark<?php } ?>">
+              <?php for ($i = 1; $i <= $links['lastPage']; $i++): ?>
+                <a href="<?= $links[$i] ?>" class="btn <?php if ($links['currentPage'] === $i) : ?> btn-dark disabled <?php else: ?> btn-outline-dark<?php endif; ?>">
                     <?= $i ?>
                 </a>
-              <?php } ?>
+              <?php endfor; ?>
           </div>
         </div>
       </div>
